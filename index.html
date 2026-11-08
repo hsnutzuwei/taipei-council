@@ -116,7 +116,6 @@ button:focus-visible,input:focus-visible,.compare-scroll:focus-visible{outline:2
 
   <p class="note">勾選候選人即可加入比較，最多 3 人；切換選區或搜尋時會保留選取。</p>
   <footer>
-    <h3>瀏覽與比較次數</h3><p id="count-explanation">計數服務尚未啟用。啟用後，姓名在畫面停留至少 1 秒算一次瀏覽，按「開始比較」替每位入選者計一次。同一瀏覽器每天每人每種操作最多計一次。數字僅代表本站使用情形，不代表支持度、民調或實際人數；原頁未記錄的歷史次數不回補。服務會使用匿名瀏覽器識別碼及短期雜湊網路識別碼去重與限流。</p>
     <h3>資料說明</h3>
     <p>候選人名單：臺北市選委會 2026 年 9 月 4 日登記截止時公布的名單，編號為登記順序，不是選票號次。之後如有退選或黨籍異動，以中選會 11 月 17 日公告的正式名單為準。</p>
     <p>「現任」標示：依 2022 年第 14 屆議員當選名單比對，未反映任期中的辭職或異動。</p>
@@ -188,8 +187,8 @@ function card([name, party, inc, extra], i, dist){
   if (extra) body += `<p class="note">${esc(extra)}</p>`;
   const nm = st ? `<a class="name" href="${LM}${st.g}-taipei" target="_blank" rel="noopener">${esc(name)}</a>` : `<span class="name">${esc(name)}</span>`;
   return `<li class="cand"><span class="no">${dist ? "" : String(i+1).padStart(2,"0")}</span><div class="main">
-    <div class="row" data-view-name="${esc(name)}">${nm}<span class="party">${esc(party)}</span>
-    <span class="tag ${inc?"inc":"new"}">${inc?"現任":"新人"}</span>${dist?`<span class="party">${esc(dist)}</span>`:""}</div>${body}<p class="note" data-count-name="${esc(name)}">瀏覽：尚未啟用 · 比較：尚未啟用</p><label class="compare-pick"><input type="checkbox" data-compare="${esc(name)}" aria-label="將${esc(name)}加入比較" ${selected.has(name)?"checked":""}>加入比較</label></div></li>`;
+    <div class="row">${nm}<span class="party">${esc(party)}</span>
+    <span class="tag ${inc?"inc":"new"}">${inc?"現任":"新人"}</span>${dist?`<span class="party">${esc(dist)}</span>`:""}</div>${body}<label class="compare-pick"><input type="checkbox" data-compare="${esc(name)}" aria-label="將${esc(name)}加入比較" ${selected.has(name)?"checked":""}>加入比較</label></div></li>`;
 }
 
 function show(id){
@@ -261,7 +260,6 @@ $("#compare-open").addEventListener("click", () => {
   if (selected.size < 2) return;
   renderComparison();
   $("#compare-dialog").showModal();
-  recordCounts("compare", [...selected]);
   $("#compare-dialog .compare-scroll").scrollLeft = 0;
 });
 $("#compare-close").addEventListener("click", () => $("#compare-dialog").close());
@@ -288,85 +286,6 @@ $("#districts").addEventListener("click", e => {
 $("#q").addEventListener("input", e => { const q = e.target.value.trim(); q ? search(q) : show(location.hash.slice(1)); });
 window.addEventListener("hashchange", () => { if (!$("#q").value.trim()) show(location.hash.slice(1)); });
 show(location.hash.slice(1));
-
-// Set this public URL after deploying counter-service; never put secrets here.
-const COUNTER_API = "";
-const COUNT_IDS = {"謝閔弘": "c001", "李文": "c002", "陳彥廷": "c003", "鍾佩玲": "c004", "紀建漢": "c005", "陳賢蔚": "c006", "林世宗": "c007", "黃瀞瑩": "c008", "林揚庭": "c009", "陳慈慧": "c010", "陳重文": "c011", "陳怡潔": "c012", "林杏兒": "c013", "張斯綱": "c014", "賴苡任": "c015", "汪志冰": "c016", "劉致妤": "c017", "林延鳳": "c018", "林聖峰": "c019", "侯漢廷": "c020", "吳欣岱": "c021", "李明賢": "c022", "陳冠安": "c023", "高嘉瑜": "c024", "王孝維": "c025", "游淑慧": "c026", "何孟樺": "c027", "陳宥丞": "c028", "何恕懷": "c029", "闕枚莎": "c030", "陳又新": "c031", "吳世正": "c032", "黃啟彬": "c033", "鄧樂強": "c034", "詹為元": "c035", "張文潔": "c036", "郭凡": "c037", "李明璇": "c038", "秦慧珠": "c039", "洪健益": "c040", "戴錫欽": "c041", "許甫": "c042", "左曉明": "c043", "許淑華": "c044", "林柏勛": "c045", "許原榮": "c046", "朱政騏": "c047", "顏若芳": "c048", "賴俊翰": "c049", "熊羿": "c050", "李易儒": "c051", "陳炳甫": "c052", "林子揚": "c053", "柳采葳": "c054", "林亮君": "c055", "葉林傳": "c056", "黃麗香": "c057", "林珍羽": "c058", "陳怡君": "c059", "李惠暄": "c060", "張銘祐": "c061", "吳志剛": "c062", "鍾小平": "c063", "陳力新": "c064", "王振庭": "c065", "洪婉臻": "c066", "吳怡萱": "c067", "應佳妤": "c068", "劉耀仁": "c069", "張延廷": "c070", "徐立信": "c071", "馬郁雯": "c072", "郭昭巖": "c073", "譚傳紹": "c074", "李道翔": "c075", "陳峙穎": "c076", "李奇峯": "c077", "簡舒培": "c078", "楊植斗": "c079", "陳聖文": "c080", "游智彬": "c081", "耿葳": "c082", "徐弘庭": "c083", "苗博雅": "c084", "陳錦祥": "c085", "李柏毅": "c086", "鍾沛君": "c087", "劉品妡": "c088", "張志豪": "c089", "曾獻瑩": "c090", "王欣儀": "c091", "王閔生": "c092", "張維學": "c093", "李芳儒": "c094", "林筱薇 Icyang Tamana": "c095", "林家豪": "c096", "李傅鈺婷": "c097", "孔垂崢 Haisul Islituan": "c098"};
-let countCache = null;
-let countState = COUNTER_API ? "讀取中" : "尚未啟用";
-const countPending = new Set();
-const countDone = new Set();
-function counterDay(){ return new Date(Date.now()+8*3600000).toISOString().slice(0,10); }
-let countVisitor;
-try {
-  countVisitor=localStorage.getItem("council-counter-visitor");
-  if(!/^[a-f0-9-]{36}$/.test(countVisitor||"")) {
-    countVisitor=crypto.randomUUID();
-    localStorage.setItem("council-counter-visitor",countVisitor);
-  }
-} catch { countVisitor=crypto.randomUUID(); }
-function paintCounts(){
-  document.querySelectorAll("[data-count-name]").forEach(el=>{
-    const value=countCache?.[COUNT_IDS[el.dataset.countName]];
-    el.textContent=value && Number.isSafeInteger(value.view) && Number.isSafeInteger(value.compare)
-      ? `瀏覽：${value.view.toLocaleString("zh-TW")} 次 · 比較：${value.compare.toLocaleString("zh-TW")} 次`
-      : `瀏覽：${countState} · 比較：${countState}`;
-  });
-}
-async function counterRequest(path, options={}){
-  const response=await fetch(COUNTER_API.replace(/\/$/,"")+path,{...options,signal:AbortSignal.timeout(8000),credentials:"omit",cache:"no-store"});
-  if(!response.ok) throw new Error("Counter unavailable");
-  const data=await response.json();
-  if(!data.counts||typeof data.counts!=="object")throw new Error("Invalid counter response");
-  countCache=data.counts;
-  paintCounts();
-}
-async function recordCounts(kind,names){
-  if(!COUNTER_API)return;
-  const day=counterDay();
-  const allIds=[...new Set(names.map(n=>COUNT_IDS[n]).filter(Boolean))];
-  const fresh=allIds.filter(id=>!countDone.has(`${day}:${kind}:${id}`)&&!countPending.has(`${day}:${kind}:${id}`));
-  if(!fresh.length)return;
-  const ids=kind==="compare" ? allIds : fresh;
-  const keys=ids.map(id=>`${day}:${kind}:${id}`);
-  keys.forEach(k=>countPending.add(k));
-  try{
-    await counterRequest("/events",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({kind,ids,visitor:countVisitor})});
-    keys.forEach(k=>countDone.add(k));
-  } catch { countState="暫時無法取得";paintCounts(); }
-  finally{keys.forEach(k=>countPending.delete(k));}
-}
-const viewTimers=new Map();
-const viewVisible=new Set();
-function startView(el){
-  if(!COUNTER_API||document.hidden||viewTimers.has(el))return;
-  viewTimers.set(el,setTimeout(()=>{
-    viewTimers.delete(el);
-    if(el.isConnected&&!document.hidden&&viewVisible.has(el))recordCounts("view",[el.dataset.viewName]);
-  },1000));
-}
-const viewObserver=new IntersectionObserver(entries=>{
-  entries.forEach(({target,isIntersecting,intersectionRatio})=>{
-    if(isIntersecting&&intersectionRatio>=0.5){viewVisible.add(target);startView(target);}
-    else{viewVisible.delete(target);clearTimeout(viewTimers.get(target));viewTimers.delete(target);}
-  });
-},{threshold:[0,0.5]});
-function observeCandidates(){
-  viewObserver.disconnect();
-  viewTimers.forEach(t=>clearTimeout(t));viewTimers.clear();viewVisible.clear();
-  paintCounts();
-  if(COUNTER_API)document.querySelectorAll("[data-view-name]").forEach(el=>viewObserver.observe(el));
-}
-document.addEventListener("visibilitychange",()=>{
-  viewTimers.forEach(t=>clearTimeout(t));viewTimers.clear();
-  if(!document.hidden)viewVisible.forEach(startView);
-});
-new MutationObserver(observeCandidates).observe($("#list"),{childList:true});
-observeCandidates();
-if(COUNTER_API){
-  $("#count-explanation").textContent=$("#count-explanation").textContent.replace("計數服務尚未啟用。啟用後，","");
-  counterRequest("/counts").catch(()=>{countState="暫時無法取得";paintCounts();});
-}
 
 </script>
 
